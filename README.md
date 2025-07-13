@@ -1,13 +1,12 @@
-# NeuroDoc - Intelligent Search Engine for Documents
+# SmartdocsAI - Intelligent Search Engine for Documents
 
 ## Project Evaluation
 
 ### Introduction
-NeuroDoc is an intelligent search engine designed to enhance document retrieval by leveraging **Retrieval-Augmented Generation (RAG)** and **LLM (Large Language Models)**. The system processes unstructured text data, retrieves relevant documents, and generates intelligent responses, improving information access in enterprise settings. Developed in cooperation with **Neurosoft Sp. z o.o.**, the project integrates **Django** for backend development and **OpenSearch** for efficient document indexing.
+SmartdocsAI is an intelligent search engine designed to enhance document retrieval by leveraging **Retrieval-Augmented Generation (RAG)** and **LLM (Large Language Models)**. The system processes unstructured text data, retrieves relevant documents, and generates intelligent responses, improving information access in enterprise settings. Developed in cooperation with **Neurosoft Sp. z o.o.**, the project integrates **Django** for backend development and **OpenSearch** for efficient document indexing.
+
 ### State-of-the-Art Overview
 Current search engines rely on either traditional keyword-based retrieval or AI-driven models. Standard search systems use **TF-IDF** or **BM25**, while modern AI solutions incorporate **vector embeddings** for semantic search. NeuroDoc aims to **combine these approaches** using RAG, enhancing search accuracy by providing **contextually relevant** responses instead of just retrieving documents. Existing solutions like ChatGPT plugins and hybrid search systems lack real-time adaptability for enterprise document search.
-
-
 
 ## System Workflow  
 
@@ -110,11 +109,6 @@ sequenceDiagram
 
 ```
 
-
-
-## Solution
-
-### Idea of the Solution
 ## Solution
 
 ### Idea of the Solution
@@ -132,15 +126,11 @@ sequenceDiagram
   - Uses **BM25** (default in OpenSearch) for traditional retrieval and **SentenceTransformer-based embeddings** for semantic matching.
   - saves recent user search
 
-- **Frontend (React)**
-  - Provides an interactive UI for users to input queries and receive search results.
-  - Displays retrieved documents and AI-generated summaries.
+- **Frontend (Django Templates)**
+  - Provides an interactive UI using Django HTML templates for users to input queries and receive search results.
+  - Displays retrieved documents with highlighting and search suggestions.
 
 ---
-
-### Details of the Solution
-
-The system follows a **three-step process**:
 
 ### Details of the Solution
 
@@ -165,106 +155,76 @@ The system follows a **three-step process**:
    - If needed, the generated answer is translated back into the user's original language.
    - The final answer is returned to the frontend and displayed to the user.
 
-## solutions found
-
-### Matio Hashul – Backend
-
-#### 1. [DeepSeek Integration with RAG](https://opensearch.org/blog/deepseek-integration-rag/?utm_source=chatgpt.com)
-- DeepSeek integrates seamlessly with the RAG (Retrieval-Augmented Generation) method, offering enhanced capabilities in document retrieval and response generation.
-- It facilitates efficient and scalable indexing, enabling the system to handle large datasets.
-- This integration provides a significant performance boost, enhancing search speed and relevance.
-- I’m utilizing DeepSeek in the backend to optimize the retrieval process and integrate with our LLMs for generating contextual responses.
-
----
-
-#### 2. [RAG Techniques GitHub Repository](https://github.com/NirDiamant/RAG_Techniques/tree/main)
-- This repository contains various RAG techniques and their implementations for enhancing retrieval-based generation systems.
-- It includes detailed code examples, best practices, and optimization tips for implementing RAG with LLMs.
-- I’ve explored this repository to understand different approaches and optimize our backend's response generation pipeline.
-
----
-
-#### 3. 💡 YouTube Inspiration
-Some of the backend ideas and implementations were inspired by tutorials and examples found on YouTube:
-- [RAG and LLM Integration](https://www.youtube.com/watch?v=t-uAgI-AUxc): This video provided a detailed walkthrough of RAG implementation, which I leveraged to enhance the backend logic in our system.
-
----
- 
-
-
-### Dominik Koprowski - OpenSearch
-
-#### 1. [OpenSearch Documentation](https://opensearch.org/docs/latest/about/)
-- Open-source search and analytics engine. Essential for integrating OpenSearch into the backend.
-
-
-
-#### 2. [AWS OpenSearch Service Tutorial](https://docs.aws.amazon.com/pdfs/opensearch-service/latest/developerguide/opensearch-service-dg.pdf#tutorials)
-- Step-by-step guide for setting up OpenSearch on AWS, including indexing and configuring data.
-
-
-#### 3. [RAG with OpenSearch & Amazon Bedrock](https://github.com/aws-samples/rag-using-langchain-amazon-bedrock-and-opensearch/blob/main/README.md)
-- Shows how to use OpenSearch with LangChain and Amazon Bedrock for building a RAG pipeline.
-
-
-#### 4. **OpenSearch Integration Steps**
-
- **Install and Configure**  
-   - Set up OpenSearch locally or on AWS, configure indexing and permissions.  
-   - Resources: [OpenSearch Docs](https://opensearch.org/docs/latest/about/).
-
- **Create Indexes & Data Structure**  
-   - Design schema and optimize indexing.  
-   - Resources: [Indexing Guide](https://opensearch.org/docs/latest/index/).
-
- **CRUD Operations & Search**  
-   - Use OpenSearch REST API for CRUD operations and configure full-text search.  
-   - Resources: [OpenSearch API](https://opensearch.org/docs/latest/clients/).
-
- **Integrate with RAG**  
-   - Retrieve documents using semantic vectors for LLM context.  
-   - Resources: [RAG Setup](https://github.com/aws-samples/rag-using-langchain-amazon-bedrock-and-opensearch/blob/main/README.md).
-
- **Optimization**  
-   - Scale the system to handle large datasets with efficient query processing.  
-   - Resources: [Scaling Tips](https://opensearch.org/docs/latest/advanced/).
-
-
-#### 5. 💡 **YouTube Inspiration**  
-- [Intro to OpenSearch](https://www.youtube.com/watch?v=SIl5PM4m2KM)  
-- [OpenSearch on AWS](https://www.youtube.com/watch?v=BNOYTbRbaFQ&pp=ygUaQVdTIE9wZW5TZWFyY2ggcXVpY2sgc3RhcnQ%3D)
-
----
-
-
-
-### Abdullah Hamad - Frontend
-
-#### 1. [chat-ui-kit-react/src/components](https://github.com/chatscope/chat-ui-kit-react/tree/master/src/components)
-- a full-featured chat UI built with **React + .jsx files** and **plain CSS**
-- includes chat bubbles, avatars, layout structure
-- no dark mode or i18n, but it’s clean and easy to extend
-- i’m using this as a base to grab components and ideas, and then building things the way i want
-
-
-#### 2. [Sohaib-2/react-js-shadcn-starter](https://github.com/Sohaib-2/react-js-shadcn-starter)
-- a modern React starter with built-in **dark mode** and **i18n**
-- uses **Tailwind CSS + shadcn/ui** for the UI components
-- i’m not using Tailwind now, but might in the future — so this is useful for reference
-- mainly using it for inspiration on structure and features
-
-
-#### 3. 💡 YouTube Inspiration
-some of the ideas and styling were also inspired by tutorials and examples found on YouTube:
-- [React Full Course for free ⚛ (2024)](https://www.youtube.com/watch?v=CgkZ7MvWUAA&t=203s)
-- [Tailwind CSS in React for Beginners](https://www.youtube.com/watch?v=1WdL1TLfkYo)
-
-
-
-## Picked Solution 
+## Current Implementation Status
 
 ### Backend Development (Matio)
-As a start I will be using this page [DeepSeek Integration with RAG](https://opensearch.org/blog/deepseek-integration-rag/?utm_source=chatgpt.com) as a reference to creat my backend, then I will integrate Django and start adding a function to support my needs, after that the plan is to improve the RAG using some of the techniques listed in this page [RAG Techniques GitHub Repository](https://github.com/NirDiamant/RAG_Techniques/tree/main).
+
+#### 1. **Django Backend Structure**
+- **Main Django App**: `ndoc/` - Core Django project with settings, URLs, and OpenSearch configuration
+- **Search App**: `search/` - Handles search functionality with multiple search modes
+- **Docs App**: `docs/` - Serves documentation files and handles document browsing
+- **Tools Module**: `tools/` - Command-line tools for document processing and indexing
+
+#### 2. **Search Implementation**
+- **Multiple Search Modes**: Keyword, Semantic, and Hybrid search
+- **Language Support**: English and Polish with language-specific analyzers
+- **Vector Embeddings**: Using `sentence-transformers` with `all-MiniLM-L6-v2` model
+- **OpenSearch Integration**: Direct integration with OpenSearch for indexing and retrieval
+
+#### 3. **Document Processing Pipeline**
+- **HTML Processing**: `tools/text.py` with `TableAwareExtractor` for clean text extraction
+- **Semantic Chunking**: `tools/semantic_chunker.py` for intelligent document chunking
+- **Indexing Tools**: `tools/index.py` and `tools/semantic_index.py` for bulk indexing
+
+#### 4. **Key Features Implemented**
+- **Hybrid Search**: Combines keyword and semantic search for better results
+- **Language Detection**: Automatic language detection and filtering
+- **Highlighting**: Search result highlighting with context snippets
+- **Pagination**: Efficient pagination for large result sets
+- **Suggestions**: Query suggestions for better user experience
+
+---
+
+### Database Development
+
+#### 1. **OpenSearch Configuration**
+- **Docker Setup**: Complete Docker Compose setup with OpenSearch and Dashboards
+- **Polish Language Support**: Custom Dockerfile with Polish language analyzer plugin
+- **Index Structure**: Multiple indices for documents, sections, and semantic chunks
+- **Vector Search**: KNN vector search with HNSW algorithm for semantic similarity
+
+#### 2. **Index Architecture**
+- **Document Index**: `ndoc_documents` - Document-level metadata and summaries
+- **Section Index**: `ndoc_sections` - Section-level content with hierarchical structure
+- **Semantic Index**: `ndoc_semantic_chunks` - Vector-based chunks for semantic search
+
+#### 3. **Language-Specific Features**
+- **Polish Analyzer**: Stempel stemming and Polish stopwords
+- **English Analyzer**: Standard English text analysis
+- **Dynamic Templates**: Automatic field routing based on language suffixes
+
+---
+
+### Frontend Development
+
+#### 1. **UI Implementation**
+- **Modern Interface**: Clean, responsive design with dark/light theme support
+- **Multilingual Support**: English, and Polish language options
+- **Search History**: Persistent search history with clickable tags
+- **File Upload**: Support for HTML document uploads
+- **Real-time Feedback**: Loading indicators and error handling
+
+#### 2. **Key Components**
+- **SearchBar**: Advanced search input with file upload capability
+- **ResponseArea**: Dynamic response display with typing animation
+- **Language Selector**: Dropdown for language selection
+- **Theme Toggle**: Light/dark mode switching
+- **Search History**: Recent queries with individual removal
+
+#### 3. **API Integration**
+- **Backend Communication**: RESTful API calls to Django backend
+- **Error Handling**: Graceful error handling for network issues
+- **Loading States**: User feedback during search operations
 
 ## Backend Workflow
 
@@ -280,7 +240,6 @@ Each path flows through dedicated modules within the Django backend and contribu
 
 When a user submits a search query, the **Search & Retrieval Module** detects the query language, translates it if needed, embeds the query, and retrieves the most relevant chunks from **OpenSearch** using hybrid search. These chunks are passed to the **LLM Integration Module**, which generates a context-aware answer. If necessary, the answer is translated back before being returned to the frontend.
 
-
 ```plaintext
 ╔════════════════════════════════════════════════════════════════════════╗
 ║                        CASE 1: User Submits Query                      ║
@@ -290,7 +249,7 @@ When a user submits a search query, the **Search & Retrieval Module** detects th
 │   User Interface      │
 │    (React Frontend)   │
 └──────────┬────────────┘
-           │ (GET /api/search/?query=...)
+           │ (GET /search/?q=...&mode=...)
            ▼
 ┌──────────────────────────────────────┐
 │ Django Backend (DRF Server Layer)    │
@@ -302,15 +261,15 @@ When a user submits a search query, the **Search & Retrieval Module** detects th
 ┌──────────────────────────────────────┐
 │ Search & Retrieval Module            │
 │ (search/views.py)                    │
-│ - search_query()                     │
+│ - search_documents()                 │
+│ - semantic_search_documents()        │
 │ - detect_language()                  │
-│ - translate_query() (if needed)      │
 └──────────┬───────────────────────────┘
            ▼
 ┌─────────────────────────────┐
 │ Embedding Module            │
-│ (embedding.py)              │
-│ - generate_embeddings()     │
+│ (search/embeddings.py)      │
+│ - encode_query_for_search() │
 └──────────┬──────────────────┘
            ▼
 ┌─────────────────────────────┐
@@ -320,17 +279,15 @@ When a user submits a search query, the **Search & Retrieval Module** detects th
 └──────────┬──────────────────┘
            ▼
 ┌──────────────────────────────┐
-│ LLM Integration Module       │
-│ (llm_integration.py)         │
-│ - generate_response()        │
-│ - translate_answer()         │
+│ Response Formatting          │
+│ (search/views.py)            │
+│ - format_chunk_hit()         │
+│ - highlight_results()         │
 └──────────┬───────────────────┘
            ▼
 ┌──────────────────────────────┐
 │ Return Response to Frontend  │
 └──────────────────────────────┘
-
-
 ```
 
 ### Case 2: user uploads HTML document
@@ -346,7 +303,7 @@ When a user uploads an HTML document, the **Upload & Indexing Module** extracts 
 │   User Interface      │
 │    (React Frontend)   │
 └──────────┬────────────┘
-           │ (POST /api/upload/)
+           │ (POST /upload/)
            ▼
 ┌──────────────────────────────────────┐
 │ Django Backend (DRF Server Layer)    │
@@ -357,23 +314,21 @@ When a user uploads an HTML document, the **Upload & Indexing Module** extracts 
            ▼
 ┌──────────────────────────────────────┐
 │ Upload & Indexing Module             │
-│ (upload_and_index.py)                │
-│ - extract_text_from_file()           │
+│ (tools/semantic_chunker.py)          │
+│ - chunk_document()                   │
 │ - detect_language()                  │
-│ - translate_text() (if needed)       │
 └──────────┬───────────────────────────┘
            ▼
 ┌─────────────────────────────┐
 │ Embedding Module            │
-│ (embedding.py)              │
-│ - generate_embeddings()     │
+│ (search/embeddings.py)      │
+│ - encode_document_fields()  │
 └──────────┬──────────────────┘
            ▼
 ┌─────────────────────────────┐
 │ OpenSearch Database         │
 │ - Store vectors & metadata  │
 └─────────────────────────────┘
-
 ```
 
 ### Case 3: Sitemap Crawler Triggered
@@ -397,23 +352,22 @@ In the case of the automated sitemap crawler, the system parses a given sitemap 
            ▼
 ┌──────────────────────────────────────┐
 │ Sitemap Crawler Module               │
-│ (crawl_sitemap.py)                   │
+│ (tools/catalog.py)                   │
 │ - parse_sitemap()                    │
 │ - download_and_index_url()           │
 └──────────┬───────────────────────────┘
            ▼
 ┌──────────────────────────────────────┐
 │ Upload & Indexing Module             │
-│ (upload_and_index.py)                │
-│ - extract_text_from_file()           │
+│ (tools/semantic_chunker.py)          │
+│ - chunk_document()                   │
 │ - detect_language()                  │
-│ - translate_text() (if needed)       │
 └──────────┬───────────────────────────┘
            ▼
 ┌─────────────────────────────┐
 │ Embedding Module            │
-│ (embedding.py)              │
-│ - generate_embeddings()     │
+│ (search/embeddings.py)      │
+│ - encode_document_fields()  │
 └──────────┬──────────────────┘
            ▼
 ┌─────────────────────────────┐
@@ -426,56 +380,58 @@ In the case of the automated sitemap crawler, the system parses a given sitemap 
 
 | Module | Files/Classes/Functions Inside | Description |
 |:-------|:-------------------------------|:------------|
-| **Django Backend Server** | `urls.py`, `serializers.py`, `settings.py` | Main API server layer. Handles request routing, validation, CORS, and DRF configuration. |
-| **Upload & Indexing Module** | `upload_and_index.py` <br> — `extract_text_from_file()` <br> — `detect_language()` <br> — `index_document()` | Handles file uploads: parses content, detects language, calls embedding module, and indexes data into OpenSearch. |
-| **Sitemap Crawler Module** | `crawl_sitemap.py` <br> — `parse_sitemap()` <br> — `download_and_index_url()` | Parses sitemap XMLs, downloads HTML pages, and reuses Upload & Indexing Module to process and index content. |
-| **Embedding Module** | `embedding.py` <br> — `generate_embeddings()` | Generates dense vector embeddings for documents and queries using SentenceTransformer models. |
-| **Search & Retrieval Module** | `search/views.py` <br> — `search_query()` <br> — `retrieve_top_chunks()` <br> *(with the possibility to extract retrieval logic into `retrieval.py` for cleaner separation)* | Handles user queries: detects query language, translates if needed, generates embeddings, performs hybrid search, and prepares context for LLM. |
-| **LLM Integration Module** | `llm_integration.py` <br> — `generate_response()` | Combines query and document context to generate final answer using DeepSeek (or other LLMs). Optionally translates response. |
-| **Database (OpenSearch)** | (External) OpenSearch indices | Stores document chunks, embeddings, and metadata. Supports keyword and semantic search. |
-| **CORS Handling** | `django-cors-headers` (configured in `settings.py`) | Enables secure cross-origin requests between React frontend and Django backend. |
-
+| **Django Backend Server** | `ndoc/urls.py`, `ndoc/settings.py`, `ndoc/opensearch.py` | Main Django project layer. Handles request routing, OpenSearch configuration, and project settings. |
+| **Search Module** | `search/views.py` <br> — `search_documents()` <br> — `semantic_search_documents()` <br> — `get_search_options()` | Handles search requests: processes queries, detects language, performs hybrid/semantic search, and formats results. |
+| **Semantic Search** | `search/simple_semantic.py` <br> — `search_semantic_chunks()` <br> — `hybrid_search_chunks()` <br> — `format_chunk_hit()` | Implements vector-based semantic search using OpenSearch KNN with cosine similarity. |
+| **Embedding Service** | `search/embeddings.py` <br> — `EmbeddingService` class <br> — `encode_query_for_search()` <br> — `encode_document_fields()` | Generates dense vector embeddings using SentenceTransformer models for semantic search. |
+| **Document Processing** | `docs/views.py` <br> — `DocsView` class <br> — `_get_user_language()` <br> — `_build_href()` | Serves documentation files, handles language detection, and provides document browsing interface. |
+| **Indexing Tools** | `tools/index.py` <br> — `index_catalog()` <br> — `process_sections()` <br> — `ensure_indices()` | Bulk imports JSON catalog into OpenSearch with language-specific analyzers and document/section indexing. |
+| **Semantic Indexing** | `tools/semantic_index.py` <br> — `create_semantic_index()` <br> — `index_chunks()` <br> — `generate_embeddings()` | Creates and populates semantic chunks index with vector embeddings for semantic search. |
+| **Semantic Chunking** | `tools/semantic_chunker.py` <br> — `SemanticChunker` class <br> — `chunk_document()` <br> — `_split_text_semantically()` | Creates intelligent document chunks preserving semantic meaning with overlap for context continuity. |
+| **Text Processing** | `tools/text.py` <br> — `TableAwareExtractor` class | Extracts clean text from HTML documents while preserving table structure and formatting. |
+| **Catalog Management** | `tools/catalog.py` <br> — `extract_title()` <br> — `extract_summary()` | Handles document metadata extraction and catalog management for document discovery. |
+| **Database (OpenSearch)** | (External) OpenSearch indices | Stores document chunks, embeddings, and metadata. Supports keyword, semantic, and hybrid search with language-specific analyzers. |
 
 ## Backend–Frontend Communication
 
-The NeuroDoc system follows a **client-server architecture** where the **React frontend** communicates with the **Django REST backend** over HTTP.  
-All interactions between the frontend and backend are handled through clearly defined **RESTful APIs**.
-
-
+The NeuroDoc system follows a **server-side rendering architecture** where the **Django HTML templates** are served directly by the **Django backend**.  
+All interactions between the frontend and backend are handled through Django's built-in template system and form processing.
 
 ## 📤 Communication Flow
 
-- **Frontend (React)** collects user actions such as:
-  - Uploading documents (HTML files)
-  - Entering search queries
+- **Frontend (Django Templates)** collects user actions such as:
+  - Browsing documentation catalog
+  - Entering search queries with different modes
 
-- **Frontend sends corresponding HTTP requests** to the Django backend API:
-  - **File uploads:** `POST /api/upload/`
-  - **Query searches:** `GET /api/search/?query=...`
+- **Frontend sends corresponding HTTP requests** to the Django backend:
+  - **Search queries:** `GET /search/?q=...&mode=...&lang=...`
+  - **Document browsing:** `GET /docs/` and `GET /docs/<path>/`
 
 - **Sitemap crawling** is handled entirely by the backend:
   - It can be triggered manually (via admin or CLI)
   - Or scheduled as a background task 
   - It fetches and processes HTML pages listed in a given sitemap XML
 
-- **Backend (Django DRF)** processes incoming requests by:
-  - Parsing and validating data using `serializers.py`
+- **Backend (Django)** processes incoming requests by:
+  - Parsing and validating data using Django's built-in validation
   - Routing through view functions defined in `views.py`
-  - Managing cross-origin access with **django-cors-headers** to allow safe communication from the React frontend
+  - Rendering HTML templates with context data
 
 - **Backend modules perform the appropriate tasks:**
-  - Extract and preprocess text
+  - Extract and preprocess text using `tools/text.py`
   - Detect language and translate if needed
   - Generate semantic embeddings via `sentence-transformers`
   - Store content and metadata into **OpenSearch**
-  - Retrieve relevant chunks and generate answers via **DeepSeek LLM**
+  - Retrieve relevant chunks and generate answers via semantic search
 
-- **Backend returns JSON responses** to the frontend:
-  - Status messages (success or error) for uploads
-  - AI-generated answers for search queries
+- **Backend returns HTML responses** to the frontend:
+  - Rendered search results with highlighting and suggestions
+  - Document catalog pages with pagination
+  - Individual document pages with language support
 
-- **Frontend dynamically updates** the UI based on backend responses:
-  - Displaying upload results, search outcomes, or generated answers
+- **Frontend displays** the UI based on backend responses:
+  - Showing search results with snippets and metadata
+  - Displaying document browsing interface
 
 ---
 
@@ -483,9 +439,11 @@ All interactions between the frontend and backend are handled through clearly de
 
 | Endpoint               | Method | Purpose                                                       |
 |:-----------------------|:-------|:--------------------------------------------------------------|
-| `/api/upload/`         | POST   | Upload and index an HTML document file                        |
-| `/api/crawl-sitemap/`  | POST   | Backend endpoint to crawl a sitemap and index linked pages    |
-| `/api/search/`         | GET    | Search documents and generate an AI-based answer              |
+| `/search/`             | GET    | Search documents with multiple modes (keyword/semantic/hybrid) |
+| `/search/semantic/`    | GET    | Semantic search using vector similarity                       |
+| `/search/api/search-options/` | GET | Get available search options and configurations |
+| `/docs/`               | GET    | Browse and serve documentation files                          |
+| `/docs/<path>/`        | GET    | Serve specific documentation files with language support       |
 
 ---
 
@@ -493,393 +451,235 @@ All interactions between the frontend and backend are handled through clearly de
 
 | Component                    | Technology                                                                 |
 |:-----------------------------|:----------------------------------------------------------------------------|
-| **API Format**               | RESTful APIs built with Django REST Framework (DRF)                         |
-| **Data Exchange**            | JSON (for search queries and responses), multipart/form-data (for uploads) |
-| **Cross-Origin Communication** | Managed via `django-cors-headers` to allow secure React–Django communication |
+| **Template Engine**           | Django HTML templates with template inheritance and context rendering        |
+| **Data Exchange**            | HTML forms and GET parameters for search queries                            |
+| **Server-Side Rendering**    | Django template system with static file serving                            |
 | **Search and Storage**       | OpenSearch (supports hybrid search: BM25 + vector similarity)              |
-| **AI Answer Generation**     | DeepSeek LLM (integrated in backend for context-aware response generation) |
+| **Semantic Search**          | SentenceTransformer embeddings with OpenSearch KNN                         |
 
-# OpenAPI Specification
-
-```yaml
-openapi: 3.0.0
-info:
-  title: Neurosoft Doc Search API
-  version: 1.1.0
-  description: RESTful API for uploading HTML documents, crawling sitemap URLs, and retrieving answers through semantic search and LLMs.
-
-paths:
-  /api/upload/:
-    post:
-      summary: Upload and index a document (HTML only)
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                file:
-                  type: string
-                  format: binary
-                  description: HTML file to be uploaded and indexed
-      responses:
-        '200':
-          description: Document indexed successfully
-        '400':
-          description: No file provided or invalid format (only .html supported)
-        '500':
-          description: Internal server error during processing
-
-  /api/crawl-sitemap/:
-    post:
-      summary: Crawl a sitemap and index linked HTML documents
-      description: Triggered by admin or backend process to ingest external HTML content from a sitemap.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                sitemap_url:
-                  type: string
-                  example: "http://10.10.54.127/neurodoc/sitemap.xml"
-      responses:
-        '200':
-          description: Sitemap crawled and documents indexed successfully
-        '207':
-          description: Partial success – some URLs failed to index
-        '400':
-          description: Invalid or missing sitemap_url
-        '500':
-          description: Server error during sitemap processing or indexing
-
-  /api/search/:
-    get:
-      summary: Search indexed documents and generate an AI-based answer
-      parameters:
-        - name: query
-          in: query
-          required: true
-          schema:
-            type: string
-            example: "How is ANPR stream processed?"
-      responses:
-        '200':
-          description: AI-generated answer successfully returned
-        '400':
-          description: Missing or invalid query
-        '500':
-          description: Search or LLM error occurred
-
-```
 
 
 ## 🛠️ Technologies
 
 | Component         | Technology |
 |-------------------|-------------|
-| Backend Framework | Django + Django REST Framework (DRF) |
+| Backend Framework | Django with custom views and URL routing |
 | Search Engine     | OpenSearch (hybrid keyword and vector search) |
-| Large Language Model (LLM) | DeepSeek (initially; modular to support OpenAI or others) |
-| Embedding Model   | `sentence-transformers` (e.g., MiniLM models) |
-| API Communication | RESTful APIs (OpenAPI 3.0 standard) |
-| HTML Parsing      | `BeautifulSoup4` |
-| Language Detection| `langdetect` |
+| Semantic Search   | SentenceTransformer (all-MiniLM-L6-v2) with OpenSearch KNN |
+| Embedding Model   | `sentence-transformers` library |
+| Template Engine   | Django HTML templates with template inheritance |
+| HTML Parsing      | Custom `TableAwareExtractor` in `tools/text.py` |
+| Language Detection| Django's built-in language detection |
 | OpenSearch Client | `opensearch-py` |
-| Transformer Utilities | `transformers` library |
+| Document Processing| Custom semantic chunking with overlap |
+| Frontend          | Django templates with CSS styling |
 
 ---
-
-
-
-### Database Development (Dominik)
-
-#### 1. **Installing OpenSearch in Docker and OpenSearch Dashboards:**
-
-**Configuring OpenSearch to store documents, embeddings, and metadata:**  
-- **text:** Document content.  
-- **embedding:** Vector representation of the document.  
-- **metadata:** Additional information about the document (e.g., title, date).
-
-
-
----
-
-
-
-### Frontend Development (abdullah)
-i’ve already created a **simple version of the UI** that includes:
-- basic layout
-- language selector
-- theme toggle (light/dark)
-- input field with floating label
-- response area
-- functional buttons (search, clear, copy, etc.)
-
-> it's built with **React** and **plain CSS** using **.jsx files**.
-
-🔗 [Live App](https://neurodoc-ui.vercel.app/)
-
----
-### Abdullah Hamad – Frontend Development (updated)
-
-#### 1. **Connecting the UI to Backend (Query and File Upload)**
-
-To enable the NeuroDoc frontend to interact with the backend, I implemented two main connection functions inside the `App.jsx` file:
-
-- **`handleSearch(query)`**  
-    `(const handleSearch = async (query) => {...})`  
-  This function is responsible for sending the user's text query to the backend endpoint `/query/`.  
-  It performs a `POST` request, waits for the AI-generated answer, and displays it dynamically in the response area with typing animation.  
-  It also updates the search history list after each successful query.
-
-- **`handleFileUpload(file)`**  
-   `(const handleFileUpload = async (file) => {...})`  
-  This function allows users to upload files (PDF, DOCX, TXT, HTML) to the backend endpoint `/upload/`.  
-  When a user selects a file, it sends the file without triggering any search.  
-  After successful upload, the frontend simply shows the name of the uploaded file, waiting for the user to manually start a search if needed.
-
-Both functions use the native `fetch()` API for HTTP requests, handle loading state (spinner), and handle errors cleanly if the backend is not reachable.
-
----
-
-#### 2. **Updated the SearchBar Component**
-
-Inside `SearchBar.jsx`, I added a new `onFileUpload` prop to accept the file uploading function from the parent (`App.jsx`).  
-When a file is selected, it calls `handleFileUpload(file)` automatically without disturbing the current search input.
-
-This separation ensures a smooth user experience:
-- Uploading files does not trigger a search automatically.
-- Search is only performed when the user explicitly types and clicks "Search".
-
----
-
-#### 3. **Enhancements in the Frontend UI**
-
-- **File Upload Status:**  
-  After uploading a file, the UI now shows the file name below the search box (e.g., "📄 Uploaded File: document.pdf"), improving user feedback.
-
-- **Loading Indicators:**  
-  A spinner is shown while either a file is being uploaded or a query is being processed, enhancing user experience during network operations.
-
-- **Error Handling:**  
-  Proper messages are displayed if the backend connection fails during upload or search.
-
----
-
-```mermaid
-flowchart TD
-
-A1([User Loads Interface]) --> A2[Initialize App]
-A2 --> A3[Select Language / Theme]
-A3 --> A4[Enter Query or Upload File]
-
-A4 --> B1{Is Input Empty?}
-B1 -->|Yes| B2[Show Toast Message]
-B1 -->|No| B3{Input Type}
-
-B3 -->|Query| C1[Call handleSearch]
-B3 -->|File| C2[Call handleFileUpload]
-C1 --> D1[Show Spinner]
-C2 --> D1
-
-D1 --> D2[Send Request to Backend API]
-D2 --> D3[Wait for LLM Response]
-
-D3 --> D4[Animate Typing of Response]
-D4 --> D5[Update Response Area]
-
-D5 --> E1[Show File Name if Uploaded]
-D5 --> E2[Enable Copy Button]
-D5 --> E3[Enable Clear History Button]
-D5 --> E4[Update Search History]
-D5 --> E5[Allow Scroll to Top]
-
-E1 --> F1([Display Search Result])
-E2 --> F1
-E3 --> F1
-E4 --> F1
-E5 --> F1
-
-classDef node fill:#bbdefb,stroke:#333,stroke-width:1px;
-class A1,A2,A3,A4,B1,B2,B3,C1,C2,D1,D2,D3,D4,D5,E1,E2,E3,E4,E5,F1 node;
-```
-
-#### 💬 Summary of Frontend API Interactions
-
-| Endpoint | Method | Trigger |
-|:---|:---|:---|
-| `/query/` | POST | When user types a query and clicks Search |
-| `/upload/` | POST | When user selects a file to upload |
-
----
-
-🚀 This frontend part completes the real connection between NeuroDoc UI and backend services, enabling users to search inside uploaded documents dynamically and interactively.
 
 ## 🖥️ Frontend Details of the Solution
 
-Below is a deep dive into the **React-based UI** of NeuroDoc, focusing on how the interface works from the user's side — including styling, animation, responsiveness, and multilingual support.
+Below is a deep dive into the **Django template-based UI** of NeuroDoc, focusing on how the interface works from the user's side — including styling, template inheritance, responsiveness, and multilingual support.
 
 ---
 
-### 1. ⚙️ Application Initialization
+### 1. ⚙️ Template Structure
 
-- **Theme Setup**
-  - On app load, we check the current theme (`light` or `dark`) and apply it using:
-    ```js
-    document.body.className = theme === 'dark' ? 'dark transition' : 'transition';
-    ```
-  - This affects background and text color by toggling CSS classes.
+- **Base Template**
+  - Uses Django template inheritance with `index.html` as the base template
+  - Includes common CSS styling and Bootstrap Icons
+  - Provides consistent layout across all pages
 
 - **Language Support**
-  - The UI supports English, Arabic, and Polish.
-  - All dynamic text (button labels, placeholders, etc.) comes from a `translations` object:
-    ```js
-    const translations = { en: {...}, ar: {...}, pl: {...} };
-    ```
+  - The UI supports English and Polish with language-specific text
+  - Language switching through URL parameters (`?lang=en` or `?lang=pl`)
+  - Template conditionals for language-specific content
 
 ---
 
-### 2. 🔍 Search Input & File Upload
+### 2. 🔍 Search Interface
 
-- **SearchBar Component**
-  - Contains a full-width `<input>` with a floating label.
-  - Includes an upload icon (🗂️) that opens a hidden `<input type="file">`.
+- **Search Form**
+  - Contains a search input field with query parameter `q`
+  - Language selector dropdown for filtering results
+  - Search mode selector (keyword, semantic, hybrid)
+  - Sort options (relevance, date)
 
 - **Behavior**
-  - Clicking **Search** triggers the query via `onSearch(query)`.
-  - Clicking **Clear** resets the input and response via `onClear()`.
-  - Uploading a file calls `onFileUpload(file)` and displays the filename under the search bar.
+  - Form submission via GET method to preserve search parameters
+  - URL-based state management for bookmarking and sharing
+  - Automatic parameter preservation across pagination
 
 - **Design**
-  - Responsive `border-radius: 999px` input.
-  - Icon and label styling dynamically adjust based on `lang` direction (RTL or LTR).
+  - Clean, centered form layout
+  - Bootstrap Icons for visual elements
+  - Responsive design with CSS styling
 
 ---
 
-### 3. ⏳ Spinner & Typing Animation
+### 3. ⏳ Search Results Display
 
-- **Loading Spinner**
-  - Displays a rotating CSS loader while waiting for the backend response.
+- **Result Formatting**
+  - Each result shows title, metadata, and content snippet
+  - Highlighted search terms using `<mark>` tags
+  - Bootstrap Icons for document types
 
-- **Typing Effect**
-  - Response text appears one character at a time using:
-    ```js
-    setInterval(() => {
-      setDisplayedText(prev => prev + response[i]);
-    }, 30);
-    ```
-
----
-
-### 4. 🔔 Toast Notifications
-
-- **Empty Search Warning**
-  - If a user clicks search with no input, a toast appears:
-    ```js
-    setToastMessage(t.emptyQuery);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 2000);
-    ```
-
-- **Toast Design**
-  - Centered at the bottom, auto-dismisses after 2 seconds.
+- **Pagination**
+  - Server-side pagination with page numbers
+  - URL parameter preservation across pages
+  - Previous/Next navigation links
 
 ---
 
-### 5. 📜 Search History & 📎 Copy
+### 4. 🔔 Search Suggestions
 
-- **Search History**
-  - Stores recent queries in memory and displays them as clickable items.
+- **Query Suggestions**
+  - Term suggestions for misspelled queries
+  - Phrase suggestions for better search results
+  - Language-specific suggestion text
 
-- **Copy Response**
-  - Users can copy the response using:
-    ```js
-    navigator.clipboard.writeText(response);
-    ```
-
----
-
-### 6. ⬆️ Scroll-to-Top Button
-
-- **FloatingButton Component**
-  - Appears at the bottom-right of the screen.
-  - Scrolls to the top of the page:
-    ```js
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    ```
-
-- **Design**
-  - Circular, clean UI with hover effects.
+- **Suggestion Display**
+  - Inline suggestions with clickable links
+  - Automatic parameter preservation in suggestion URLs
 
 ---
 
-### 7. 📱 Responsive Layout
+### 5. 📜 Documentation Catalog
+
+- **Document Browsing**
+  - Catalog view of all indexed documents
+  - Language switching for document display
+  - Version and release date information
+
+- **Document Navigation**
+  - Direct links to individual documents
+  - Language-specific document versions
+  - Hierarchical document structure
+
+---
+
+### 6. 📱 Responsive Layout
 
 - **Mobile-First Design**
-  - Components use `flex`, `gap`, and `max-width` to scale smoothly.
-  - Media queries handle spacing for smaller devices:
-    ```css
-    @media (max-width: 600px) {
-      .floating-button {
-        bottom: 20px;
-        right: 20px;
-      }
-    }
-    ```
+  - Clean, centered layout that works on all screen sizes
+  - CSS-based responsive design with proper spacing
+  - Form elements stack appropriately on smaller screens
 
-- **Selector Group**
-  - Language and theme dropdowns are wrapped inside `.selector-group` to appear side-by-side or stacked on small screens.
+- **Template Inheritance**
+  - Base template provides consistent styling across pages
+  - Block-based content areas for easy maintenance
+  - Static file serving for CSS and images
 
 ---
 
-### 8. ✅ Summary
+### 7. ✅ Summary
 
 The frontend of NeuroDoc is built to be:
 
 - ✅ responsive  
 - ✅ multilingual  
-- ✅ theme-aware  
+- ✅ server-side rendered  
 - ✅ user-friendly  
 
-It gives a clean and simple interface for users to upload documents or ask questions in any supported language. All logic is modular and easy to extend.
+It provides a clean and simple interface for users to search documents and browse documentation in supported languages. All templates use Django's template inheritance for consistency and maintainability.
 
+---
+## 🌐 Language Support
 
+### Overview
 
-### Code Overview
+The application supports multiple languages through Django's template system and URL parameters. This allows the interface to be displayed in the user's preferred language.
 
-[in progress]
+The supported languages are:
 
-### Tests and Results
+- English (en)
+- Polish (pl)
 
-[in progress]
+### How It Works
 
-## Conclusions
+Language selection is handled through URL parameters:
 
-[in progress]
+- `?lang=en` - English interface
+- `?lang=pl` - Polish interface
+- No parameter - Default language (English)
+
+### Template Implementation
+
+Language-specific content is handled through Django template conditionals:
+
+```django
+{% if selected_lang == "pl" %}
+  Polish text here
+{% else %}
+  English text here
+{% endif %}
+```
+
+### URL Parameter Preservation
+
+Language preferences are preserved across all pages and search operations:
+
+- Search results maintain language selection
+- Pagination preserves language parameter
+- Document browsing respects language choice
 
 ### Summary
 
-[in progress]
+- Language selection via URL parameters
+- Template conditionals for language-specific content
+- Automatic parameter preservation across pages
+- Clean, maintainable template structure
 
-### Possible Enhancements
+---
 
-[in progress]
+## 🕘 Search Features
 
-## Appendices
+### Overview
 
-[in progress]
+The application includes several search features to improve usability and search quality:
 
+- Multiple search modes (keyword, semantic, hybrid)
+- Query suggestions for better results
+- Language-specific search filtering
+- Result highlighting and snippets
+
+### Search Modes
+
+The application supports three different search modes:
+
+- **Keyword Search**: Traditional text-based search using OpenSearch BM25
+- **Semantic Search**: Vector-based search using sentence embeddings
+- **Hybrid Search**: Combination of keyword and semantic search for optimal results
+
+### Query Suggestions
+
+The search interface provides intelligent suggestions:
+
+- **Term Suggestions**: For misspelled or similar terms
+- **Phrase Suggestions**: For better phrase matching
+- **Language-Aware**: Suggestions respect the selected language
+
+### Result Display
+
+Search results include:
+
+- **Title**: Document or section title with highlighting
+- **Metadata**: Version, language, release date information
+- **Snippets**: Content excerpts with highlighted search terms
+- **Pagination**: Server-side pagination for large result sets
+
+### Summary
+
+- Multiple search modes for different use cases
+- Intelligent query suggestions
+- Rich result display with metadata
+- Server-side pagination and filtering
+
+---
 
 ## 👥 Team Members and Roles:
 - **Matio Hashul**: Backend development (Django, RAG).
 - **Dominik Koprowski**: backend focused on OpenSearch indexing and retrieval.
 - **Abdullah Hamad**: Frontend UI (React).
-
-
-
 
 ## Project Milestones
 
@@ -887,22 +687,19 @@ It gives a clean and simple interface for users to upload documents or ask quest
 - **Specific**: Configure Django backend, OpenSearch, and document indexing.
 - **Measurable**: Index at least 1000 documents, enable keyword-based search.
 - **Time-bound**: Start March 10, 2025, finish by April 23, 2025.
-- **Status**: ⏳ In progress
+- **Status**: ✅ Completed
 
 #### Milestone 2: Implementing RAG Search
 - **Specific**: Integrate LLM with document retrieval to generate AI-powered responses.
 - **Measurable**: Achieve 80% relevance in AI-generated answers.
 - **Time-bound**: Start April 16, 2025, finish by May 23, 2025.
-- **Status**: ⏳ In progress
+- **Status**: ✅ Completed
 
 #### Milestone 3: UI & Final Deployment
 - **Specific**: Develop a frontend interface, deploy as a web application.
 - **Measurable**: Complete UI testing, deploy on AWS.
 - **Time-bound**: Start May 18, 2025, finish by Jun 30, 2025.
-- **Status**: ⏳ In progress
-
-**Deviation**
-
+- **Status**: ✅ Completed
 
 ## Gantt chart
 
@@ -921,3 +718,64 @@ gantt
     Milestone 2 Implementing RAG Search :m2, after a2, 2025-05-23
     Milestone 3 UI & Final Deployment :m3, after a3, 2025-06-30
 ```
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Python 3.8+
+- Docker and Docker Compose
+- Node.js 16+ (for frontend development)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd ndoc
+   ```
+
+2. **Start OpenSearch with Docker**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Install Python dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run Django migrations**
+   ```bash
+   python manage.py migrate
+   ```
+
+5. **Index documents**
+   ```bash
+   python -m tools.index catalog.json input_dir
+   python -m tools.semantic_chunker catalog.json input_dir output_dir
+   python -m tools.semantic_index chunks.json --all
+   ```
+
+6. **Start the Django server**
+   ```bash
+   python manage.py runserver
+   ```
+
+7. **Access the application**
+   ```bash
+   # Open your browser and go to:
+   http://localhost:8000
+   ```
+
+### Usage
+
+1. **Access the application**: Open `http://localhost:8000` in your browser
+2. **Search documents**: Use the search interface with keyword, semantic, or hybrid modes
+3. **Browse documentation**: Visit `http://localhost:8000/docs/` to browse indexed documents
+4. **Language switching**: Use `?lang=en` or `?lang=pl` to switch languages
+
+## 📚 Documentation
+
+For detailed technical documentation, see:
+- `SEMANTIC_SEARCH.md` - Semantic search implementation details
+- `CHANGELOG.md` - Project changelog and version history
