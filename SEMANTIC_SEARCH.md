@@ -226,8 +226,8 @@ OpenSearch performs KNN search:
 ```
 Query Vector:    [0.23, -0.12, 0.87, ...]
                       ↓ Cosine Similarity
-Chunk Vectors:   [0.25, -0.11, 0.89, ...] → Score: 0.95 ✅
-                 [0.45, -0.67, 0.23, ...] → Score: 0.73 ✅  
+Chunk Vectors:   [0.25, -0.11, 0.89, ...] → Score: 0.95
+[0.45, -0.67, 0.23, ...] → Score: 0.73  
                  [0.12, 0.98, -0.34, ...] → Score: 0.45 ❌
 ```
 
@@ -331,18 +331,18 @@ curl "http://localhost:8000/search/?q=weather conditions test&mode=hybrid"
 
 ## Key Improvements
 
-### ✅ **Simplified**
+### **Simplified**
 - **3 new files** vs 5+ complex files before
 - Clear separation of concerns
 - Reuses existing tools functions
 
-### ✅ **Better Chunks**
+### **Better Chunks**
 - **Semantic chunking**: Preserves paragraph boundaries
 - **Smart sizing**: 200-800 characters with overlap
 - **Context preservation**: Includes document title/summary
 - **File-aware**: Processes each HTML file separately
 
-### ✅ **Improved Search**
+### **Improved Search**
 - **More relevant results**: Chunks vs full documents
 - **Better highlighting**: Focuses on relevant sections
 - **Cleaner interface**: Simplified response formatting
@@ -413,52 +413,52 @@ results = hybrid_search_chunks(client, "machine learning", semantic_weight=0.6)
 
 ```mermaid
 graph TD
-    A[HTML Documents] --> B[tools/text.py<br/>TableAwareExtractor]
-    B --> C[Clean Text with<br/>Paragraph Structure]
-    C --> D[tools/semantic_chunker.py<br/>Semantic Chunking]
-    D --> E[Chunks with<br/>200-800 chars + overlap]
-    E --> F[search/embeddings.py<br/>Vector Generation]
-    F --> G[384-dim vectors<br/>per chunk]
-    G --> H[tools/semantic_index.py<br/>OpenSearch Indexing]
-    H --> I[ndoc_semantic_chunks<br/>Index with KNN]
+    A["HTML Documents"] --> B["tools/text.py<br/>TableAwareExtractor"]
+    B --> C["Clean Text with<br/>Paragraph Structure"]
+    C --> D["tools/semantic_chunker.py<br/>Semantic Chunking"]
+    D --> E["Chunks with<br/>200-800 chars + overlap"]
+    E --> F["search/embeddings.py<br/>Vector Generation"]
+    F --> G["384-dim vectors<br/>per chunk"]
+    G --> H["tools/semantic_index.py<br/>OpenSearch Indexing"]
+    H --> I["ndoc_semantic_chunks<br/>Index with KNN"]
 ```
 
 ### 🎯 **Query Processing Flow**
 
 ```mermaid
 graph TD
-    A[User Query] --> B{Search Mode?}
-    B -->|semantic| C[encode_query_for_search]
-    B -->|hybrid| D[Vector + Keyword Query]
-    B -->|keyword| E[Traditional Search]
+    A["User Query"] --> B{"Search Mode?"}
+    B -->|semantic| C["encode_query_for_search"]
+    B -->|hybrid| D["Vector + Keyword Query"]
+    B -->|keyword| E["Traditional Search"]
     
-    C --> F[KNN Vector Search]
-    D --> G[Bool Query: Vector + MultiMatch]
+    C --> F["KNN Vector Search"]
+    D --> G["Bool Query: Vector + MultiMatch"]
     
-    F --> H[Cosine Similarity Ranking]
+    F --> H["Cosine Similarity Ranking"]
     G --> H
     
-    H --> I[Format Results]
-    I --> J[Return to User]
+    H --> I["Format Results"]
+    I --> J["Return to User"]
 ```
 
 ## Benefits
 
-### ✅ **Technical Advantages**
+### **Technical Advantages**
 1. **Leverages existing tools**: Reuses battle-tested text processing functions
 2. **Better search results**: Chunk-based approach provides more relevant matches  
 3. **Simpler maintenance**: Less code, clearer structure
 4. **Improved performance**: Focused chunks vs large documents
 5. **Semantic understanding**: Vector embeddings capture meaning, not just keywords
 
-### ✅ **Search Quality Improvements**
+### **Search Quality Improvements**
 - **Paragraph-aware chunking**: Doesn't break sentences or concepts
 - **Context preservation**: Document titles and summaries enrich each chunk
 - **Smart overlap**: Ensures no information is lost at chunk boundaries
 - **File-level organization**: Maintains document structure hierarchy
 - **Multi-modal search**: Semantic, hybrid, and keyword options
 
-### ✅ **Operational Benefits** 
+### **Operational Benefits** 
 - **Easy setup**: Clear step-by-step process
 - **Debug-friendly**: Each step produces inspectable output
 - **Scalable**: Chunk-based approach handles large document collections

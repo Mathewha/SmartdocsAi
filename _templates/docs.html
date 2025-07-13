@@ -2,7 +2,13 @@
 {% block title %}NeuroDoc · Catalog{% endblock %}
 
 {% block content %}
-<h1>Catalog</h1>
+<div class="main-header">
+  <h1>Catalog</h1>
+  <nav class="main-nav">
+    <a href="{% url 'search_documents' %}" class="nav-link">Search</a>
+    <a href="{% url 'conversational_search_documents' %}" class="nav-link">Conversational AI</a>
+  </nav>
+</div>
 
 <!-- Global language switcher -->
 {% if available_langs %}
@@ -14,6 +20,27 @@
     {% endfor %}
 </nav>
 {% endif %}
+
+<!-- Feature Cards -->
+<div class="feature-cards">
+  <div class="feature-card">
+    <div class="feature-icon">
+      <i class="bi bi-search"></i>
+    </div>
+    <h3>Traditional Search</h3>
+    <p>Search documents using keywords, semantic search, or hybrid approaches with suggestions and filters.</p>
+    <a href="{% url 'search_documents' %}" class="feature-btn">Go to Search</a>
+  </div>
+  
+  <div class="feature-card featured">
+    <div class="feature-icon">
+      <i class="bi bi-robot"></i>
+    </div>
+    <h3>Conversational AI</h3>
+    <p>Ask questions in natural language and get intelligent answers powered by AI based on your documents.</p>
+    <a href="{% url 'conversational_search_documents' %}" class="feature-btn">Start Chatting</a>
+  </div>
+</div>
 
 <ol class="search-results">
     {% for doc in docs %}

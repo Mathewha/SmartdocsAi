@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import logging
+import json
 from typing import Any, Dict, List
 
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from opensearchpy import OpenSearch
+from openai import OpenAI
 
 from ndoc.opensearch import get_client  # helper
 from .simple_semantic import search_semantic_chunks, hybrid_search_chunks, format_chunk_hit
@@ -21,6 +23,7 @@ SNIPPET_LENGTH = 500  # maksymalna długość snippetów
 SEARCH_TYPE_STANDARD = "standard"
 SEARCH_TYPE_SEMANTIC = "semantic"
 SEARCH_TYPE_HYBRID = "hybrid"
+SEARCH_TYPE_CONVERSATIONAL = "conversational"
 
 
 def _get_snippet(
@@ -360,10 +363,20 @@ def search_documents(request: HttpRequest) -> HttpResponse:
         search_type = SEARCH_TYPE_SEMANTIC
     elif search_type == "hybrid":
         search_type = SEARCH_TYPE_HYBRID
+    elif search_type == "conversational":
+        search_type = SEARCH_TYPE_CONVERSATIONAL
     
     # If semantic or hybrid search is requested, redirect to semantic search handler
     if search_type in [SEARCH_TYPE_SEMANTIC, SEARCH_TYPE_HYBRID]:
         return semantic_search_documents(request)
+    elif search_type == SEARCH_TYPE_CONVERSATIONAL:
+        # Redirect to conversational search handler
+        from django.http import HttpResponseRedirect
+        from django.urls import reverse
+        
+        params = request.GET.copy()
+        redirect_url = reverse('conversational_search_documents') + '?' + params.urlencode()
+        return HttpResponseRedirect(redirect_url)
 
     page = 1
     try:
@@ -429,6 +442,8 @@ def search_documents(request: HttpRequest) -> HttpResponse:
         mode_value = "semantic"
     elif search_type == SEARCH_TYPE_HYBRID:
         mode_value = "hybrid"
+    elif search_type == SEARCH_TYPE_CONVERSATIONAL:
+        mode_value = "conversational"
     
     return render(request, "search.html", {
         "results": results,
@@ -465,6 +480,8 @@ def semantic_search_documents(request: HttpRequest) -> HttpResponse:
         search_type = SEARCH_TYPE_SEMANTIC
     elif search_type == "hybrid":
         search_type = SEARCH_TYPE_HYBRID
+    elif search_type == "conversational":
+        search_type = SEARCH_TYPE_CONVERSATIONAL
     
     page = 1
     try:
@@ -598,7 +615,201 @@ def get_search_options(request: HttpRequest) -> HttpResponse:
             "value": SEARCH_TYPE_HYBRID,
             "label": "Hybrid Search",
             "description": "Combines semantic understanding with keyword matching"
+        },
+        {
+            "value": SEARCH_TYPE_CONVERSATIONAL,
+            "label": "Conversational Search",
+            "description": "AI-powered conversational responses based on semantic search"
         }
     ]
     
     return JsonResponse({"search_options": search_options})
+
+
+def conversational_search_documents(request: HttpRequest) -> HttpResponse:
+    """
+    Handle conversational search requests using DeepSeek API.
+    This provides a clean ChatGPT-like interface for searching documents.
+    """
+    query = request.GET.get("q", "").strip()
+    lang = request.GET.get("lang") or None
+    
+    # Always render the conversational template, even without query
+    if not query:
+        context = {
+            "query": "",
+            "selected_lang": lang,
+            "results": [],
+            "conversational_response": None,
+        }
+        return render(request, "conversational.html", context)
+    
+    client = get_client()
+    
+    try:
+        # Perform semantic search to get relevant documents
+        resp = search_semantic_chunks(
+            client=client,
+            query=query,
+            lang=lang,
+            size=MAX_HITS,
+            offset=0  # Always start from first page for conversational
+        )
+        
+        # Format results for conversational search
+        eff_lang = lang or "en"
+        raw_hits = resp["hits"]["hits"]
+        results = []
+        for hit in raw_hits:
+            fmt = format_chunk_hit(hit, query)
+            results.append(fmt)
+        
+        # Prepare context for DeepSeek API from semantic search results
+        context_docs = []
+        for hit in raw_hits[:8]:  # Use raw hits to get full content
+            source = hit.get("_source", {})
+            full_content = source.get("content", "")
+            doc_title = source.get("doc_title", "")
+            file_name = source.get("file_name", "")
+            
+            # Use full content from the chunk, not just snippet
+            if len(full_content.strip()) > 50:  # Ensure meaningful content
+                title = f"{doc_title} / {file_name}" if doc_title and file_name else doc_title or file_name
+                path = source.get("path", "")
+                href = f"/docs/{path}?highlight={query}" if path else "#"
+                
+                context_docs.append({
+                    "title": title,
+                    "content": full_content,  # Use full content instead of snippet
+                    "url": href
+                })
+        
+        # If no good context found, try with more results
+        if not context_docs and len(raw_hits) > 8:
+            for hit in raw_hits[8:15]:
+                source = hit.get("_source", {})
+                full_content = source.get("content", "")
+                if len(full_content.strip()) > 30:
+                    doc_title = source.get("doc_title", "")
+                    file_name = source.get("file_name", "")
+                    title = f"{doc_title} / {file_name}" if doc_title and file_name else doc_title or file_name
+                    path = source.get("path", "")
+                    href = f"/docs/{path}?highlight={query}" if path else "#"
+                    
+                    context_docs.append({
+                        "title": title,
+                        "content": full_content,
+                        "url": href
+                    })
+        
+        # Call DeepSeek API for conversational response
+        if context_docs:
+            conversational_response = _get_conversational_response(query, context_docs, eff_lang)
+        else:
+            if eff_lang == "pl":
+                conversational_response = "Nie znaleziono odpowiednich fragmentów dokumentów do analizy. Spróbuj zmienić zapytanie."
+            else:
+                conversational_response = "No relevant document fragments found for analysis. Please try a different query."
+        
+        context = {
+            "results": results,
+            "query": query,
+            "selected_lang": lang,
+            "conversational_response": conversational_response,
+        }
+        
+    except Exception as e:
+        logger.error(f"Conversational search failed: {e}")
+        # Return clean error response
+        if eff_lang == "pl":
+            error_msg = "Przepraszam, wystąpił błąd podczas przetwarzania zapytania. Spróbuj ponownie."
+        else:
+            error_msg = "Sorry, there was an error processing your query. Please try again."
+        
+        context = {
+            "results": [],
+            "query": query,
+            "selected_lang": lang,
+            "conversational_response": error_msg,
+        }
+    
+    return render(request, "conversational.html", context)
+
+
+def _get_conversational_response(query: str, context_docs: List[Dict[str, Any]], lang: str) -> str:
+    """
+    Get clean, focused conversational response from DeepSeek API based on search results.
+    """
+    try:
+        # Initialize DeepSeek client
+        client = OpenAI(
+            api_key="sk-56ba069176d44cfc8bc0060df5a2af9d",
+            base_url="https://api.deepseek.com"
+        )
+        
+        # Prepare clean context from search results
+        context_text = ""
+        for i, doc in enumerate(context_docs, 1):
+            # Clean and format the content
+            clean_content = doc['content'].replace('<mark>', '').replace('</mark>', '')
+            clean_content = ' '.join(clean_content.split())  # Remove extra whitespace
+            
+            context_text += f"Document {i}: {doc['title']}\n"
+            context_text += f"URL: {doc['url']}\n"
+            context_text += f"Content: {clean_content}\n\n"
+        
+        # Create optimized system message based on language
+        if lang == "pl":
+            system_message = """Jesteś ekspertem w analizie dokumentów technicznych. Twoim zadaniem jest:
+1. Przeanalizować podane fragmenty dokumentów dokładnie
+2. Odpowiedzieć na pytanie użytkownika w sposób jasny i zwięzły, podając KONKRETNE INFORMACJE z dokumentów
+3. NIE odsyłaj do nazw dokumentów - podaj faktyczne odpowiedzi z zawartości
+4. Jeśli informacja jest dostępna w fragmentach, wyciągnij ją i przedstaw bezpośrednio
+5. Cytuj konkretne fragmenty tekstu gdy to możliwe
+6. Twoja odpowiedź powinna zawierać rzeczywiste informacje, nie tylko informacje o tym, gdzie je znaleźć"""
+        else:
+            system_message = """You are an expert in analyzing technical documents. Your task is to:
+1. Carefully analyze the provided document fragments
+2. Answer the user's question clearly and concisely by providing SPECIFIC INFORMATION from the documents
+3. DO NOT refer to document names - provide actual answers from the content
+4. If information is available in the fragments, extract it and present it directly
+5. Quote specific text fragments when possible
+6. Your response should contain actual information, not just information about where to find it"""
+        
+        # Prepare optimized user message
+        user_message = f"""Question: {query}
+
+Available document fragments:
+{context_text}
+
+Please extract and provide the specific information that answers the question from the document content above. Do not just tell me which document contains the answer - give me the actual answer with relevant details from the content. Quote specific text when helpful."""
+        
+        # Call DeepSeek API with optimized parameters
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": user_message},
+            ],
+            stream=False,
+            max_tokens=800,  # Reduced for more concise responses
+            temperature=0.3,  # Lower temperature for more focused responses
+            top_p=0.9,  # Add top_p for better response quality
+            frequency_penalty=0.1,  # Reduce repetition
+            presence_penalty=0.1  # Encourage more focused responses
+        )
+        
+        # Clean up the response
+        response_text = response.choices[0].message.content.strip()
+        
+        # Remove any markdown formatting if present
+        response_text = response_text.replace('**', '').replace('*', '')
+        
+        return response_text
+        
+    except Exception as e:
+        logger.error(f"DeepSeek API call failed: {e}")
+        if lang == "pl":
+            return "Przepraszam, wystąpił błąd podczas przetwarzania zapytania konwersacyjnego."
+        else:
+            return "Sorry, there was an error processing your conversational query."

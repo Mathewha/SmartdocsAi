@@ -2,152 +2,624 @@
 {% block title %}NeuroDoc · Search{% endblock %}
 
 {% block content %}
-  <h1>Search</h1>
+<div class="search-container">
+  <div class="search-header">
+    <div class="header-content">
+      <h1>Document Search</h1>
+      <p>Find documents using keywords, semantic search, or hybrid approaches</p>
+    </div>
+    <nav class="main-nav">
+      <a href="{% url 'conversational_search_documents' %}" class="nav-link">Conversational AI</a>
+    </nav>
+  </div>Conversational AI
 
-  <div class="form">
-    <form method="get" action="{% url 'search_documents' %}">
-      <input type="text" name="q" value="{{ query }}" placeholder="Wpisz słowo kluczowe…">
-      <select name="lang">
-        <option value="">All languages</option>
-        <option value="en" {% if selected_lang == 'en' %}selected{% endif %}>English</option>
-        <option value="pl" {% if selected_lang == 'pl' %}selected{% endif %}>Polski</option>
-      </select>
-             <select name="mode">
-         <option value="keyword" {% if search_mode == 'keyword' %}selected{% endif %}>
-           {% if selected_lang == "pl" %}Wyszukiwanie słów kluczowych{% else %}Keyword Search{% endif %}
-         </option>
-         <option value="semantic" {% if search_mode == 'semantic' %}selected{% endif %}>
-           {% if selected_lang == "pl" %}Wyszukiwanie semantyczne{% else %}Semantic Search{% endif %}
-         </option>
-         <option value="hybrid" {% if search_mode == 'hybrid' %}selected{% endif %}>
-           {% if selected_lang == "pl" %}Wyszukiwanie hybrydowe{% else %}Hybrid Search{% endif %}
-         </option>
-       </select>
-      <select name="sort">
-        <option value="relevance" {% if sort_by == 'relevance' %}selected{% endif %}>Relevance</option>
-        <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Release date</option>
-      </select>
-      <button type="submit">Search</button>
+  <div class="search-form-container">
+    <form method="get" action="{% url 'search_documents' %}" class="search-form">
+      <div class="form-row">
+        <div class="input-group">
+          <input 
+            type="text" 
+            name="q" 
+            value="{{ query }}" 
+            placeholder="Enter your search query..."
+            class="search-input"
+            autocomplete="off"
+          >
+          <button type="submit" class="search-submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="form-controls">
+        <div class="control-group">
+          <label for="lang-select">Language:</label>
+          <select name="lang" id="lang-select" class="form-select">
+            <option value="">All languages</option>
+            <option value="en" {% if selected_lang == 'en' %}selected{% endif %}>English</option>
+            <option value="pl" {% if selected_lang == 'pl' %}selected{% endif %}>Polski</option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label for="mode-select">Search Mode:</label>
+          <select name="mode" id="mode-select" class="form-select">
+            <option value="keyword" {% if search_mode == 'keyword' %}selected{% endif %}>
+              {% if selected_lang == "pl" %}Wyszukiwanie słów kluczowych{% else %}Keyword Search{% endif %}
+            </option>
+            <option value="semantic" {% if search_mode == 'semantic' %}selected{% endif %}>
+              {% if selected_lang == "pl" %}Wyszukiwanie semantyczne{% else %}Semantic Search{% endif %}
+            </option>
+            <option value="hybrid" {% if search_mode == 'hybrid' %}selected{% endif %}>
+              {% if selected_lang == "pl" %}Wyszukiwanie hybrydowe{% else %}Hybrid Search{% endif %}
+            </option>
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label for="sort-select">Sort By:</label>
+          <select name="sort" id="sort-select" class="form-select">
+            <option value="relevance" {% if sort_by == 'relevance' %}selected{% endif %}>Relevance</option>
+            <option value="date" {% if sort_by == 'date' %}selected{% endif %}>Release date</option>
+          </select>
+        </div>
+      </div>
     </form>
   </div>
 
-  {# ── term suggestion ── #}
-  {% if term_suggestion and term_suggestion != query and search_mode == 'keyword' %}
-    <p class="did-you-mean">
-      <strong>
-        {% if selected_lang == "pl" %}
-          Czy chodziło o:
-        {% elif selected_lang == "en" %}
-          Did you mean:
-        {% else %}
-          Did you mean / Czy chodziło o:
-        {% endif %}
-      </strong>
-      <a href="?q={{ term_suggestion|urlencode }}
-                {% if selected_lang %}&lang={{ selected_lang }}{% endif %}
-                {% if sort_by %}&sort={{ sort_by }}{% endif %}
-                {% if search_mode %}&mode={{ search_mode }}{% endif %}">
-        <strong>{{ term_suggestion }}</strong>
-      </a>?
-    </p>
-  {% endif %}
-
-  {# ── phrase suggestion ── #}
-  {% if phrase_suggestion and phrase_suggestion != query and search_mode == 'keyword' %}
-    <p class="did-you-mean">
-      <strong>
-        {% if selected_lang == "pl" %}
-          Czy chodziło o zdanie:
-        {% elif selected_lang == "en" %}
-          Did you mean the phrase:
-        {% else %}
-          Did you mean / Czy chodziło o zdanie:
-        {% endif %}
-      </strong>
-      <a href="?q={{ phrase_suggestion|urlencode }}
-                {% if selected_lang %}&lang={{ selected_lang }}{% endif %}
-                {% if sort_by %}&sort={{ sort_by }}{% endif %}
-                {% if search_mode %}&mode={{ search_mode }}{% endif %}">
-        <strong>{{ phrase_suggestion|safe }}</strong>
-      </a>?
-    </p>
-  {% endif %}
-
-  {# ── result summary ── #}
   {% if query %}
-    <p>
-      <strong>{{ total }}</strong>
-      {% if selected_lang == "pl" %}
-        {% if total == 0 %}wyników{% elif total == 1 %}wynik{% elif total < 5 %}wyniki{% else %}wyników{% endif %}
-        dla zapytania „<em>{{ query }}</em>”
-        {% if search_mode == 'semantic' %}(wyszukiwanie semantyczne){% elif search_mode == 'hybrid' %}(wyszukiwanie hybrydowe){% endif %}
-      {% else %}
-        {% if total == 1 %}result{% else %}results{% endif %} for query "<em>{{ query }}</em>"
-        {% if search_mode == 'semantic' %}(semantic search){% elif search_mode == 'hybrid' %}(hybrid search){% endif %}
-      {% endif %}
-    </p>
-  {% else %}
-    <p>
-      <strong>{{ total }}</strong>
-      {% if selected_lang == "pl" %}
-        {% if total == 0 %}dokumentów{% elif total == 1 %}dokument{% elif total < 5 %}dokumenty{% else %}dokumentów{% endif %}
-      {% else %}
-        {% if total == 1 %}document{% else %}documents{% endif %}
-      {% endif %}
-    </p>
-  {% endif %}
-
-  {# ── results list ── #}
-  <ol class="search-results" start="{{ start_index }}">
-    {% for doc in results %}
-      <li>
-        <div class="result-title">
-          {{ doc.icon|safe }}
-          <a href="{{ doc.href }}" target="_blank">{{ doc.title }}</a>
-        </div>
-        {% if doc.meta %}
-          <div class="result-meta">{{ doc.meta }}</div>
-        {% endif %}
-        {% if doc.snippet %}
-          <div class="snippet">{{ doc.snippet|safe }}</div>
-        {% else %}
-          <div class="text-muted">
-            {% if selected_lang == "pl" %}(brak streszczenia){% else %}(no summary available){% endif %}
+    <div class="search-results-container">
+      {# ── term suggestion ── #}
+      {% if term_suggestion and term_suggestion != query and search_mode == 'keyword' %}
+        <div class="suggestion-card">
+          <div class="suggestion-icon">
+            <i class="bi bi-lightbulb"></i>
           </div>
-        {% endif %}
-      </li>
-    {% empty %}
-      <li>
-        {% if selected_lang == "pl" %}
-          Brak wyników dla zapytania.
-        {% else %}
-          No results found for your query.
-        {% endif %}
-      </li>
-    {% endfor %}
-  </ol>
+          <div class="suggestion-content">
+            <strong>
+              {% if selected_lang == "pl" %}
+                Czy chodziło o:
+              {% elif selected_lang == "en" %}
+                Did you mean:
+              {% else %}
+                Did you mean / Czy chodziło o:
+              {% endif %}
+            </strong>
+            <a href="?q={{ term_suggestion|urlencode }}
+                      {% if selected_lang %}&lang={{ selected_lang }}{% endif %}
+                      {% if sort_by %}&sort={{ sort_by }}{% endif %}
+                      {% if search_mode %}&mode={{ search_mode }}{% endif %}">
+              <strong>{{ term_suggestion }}</strong>
+            </a>?
+          </div>
+        </div>
+      {% endif %}
 
-  {# ── pagination ── #}
-  {% if total_pages > 1 %}
-    <nav class="pagination">
-      {% if page > 1 %}
-        <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}
-                  {% if selected_lang %}lang={{ selected_lang }}&{% endif %}
-                  {% if search_mode %}mode={{ search_mode }}&{% endif %}
-                  sort={{ sort_by }}&page={{ page|add:'-1' }}">
-          {% if selected_lang == "pl" %}Poprzednia{% else %}Previous{% endif %}
-        </a>
+      {# ── phrase suggestion ── #}
+      {% if phrase_suggestion and phrase_suggestion != query and search_mode == 'keyword' %}
+        <div class="suggestion-card">
+          <div class="suggestion-icon">
+            <i class="bi bi-lightbulb"></i>
+          </div>
+          <div class="suggestion-content">
+            <strong>
+              {% if selected_lang == "pl" %}
+                Czy chodziło o zdanie:
+              {% elif selected_lang == "en" %}
+                Did you mean the phrase:
+              {% else %}
+                Did you mean / Czy chodziło o zdanie:
+              {% endif %}
+            </strong>
+            <a href="?q={{ phrase_suggestion|urlencode }}
+                      {% if selected_lang %}&lang={{ selected_lang }}{% endif %}
+                      {% if sort_by %}&sort={{ sort_by }}{% endif %}
+                      {% if search_mode %}&mode={{ search_mode }}{% endif %}">
+              <strong>{{ phrase_suggestion|safe }}</strong>
+            </a>?
+          </div>
+        </div>
       {% endif %}
-      <span>{{ page }} {% if selected_lang == "pl" %}z{% else %}of{% endif %} {{ total_pages }}</span>
-      {% if page < total_pages %}
-        <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}
-                  {% if selected_lang %}lang={{ selected_lang }}&{% endif %}
-                  {% if search_mode %}mode={{ search_mode }}&{% endif %}
-                  sort={{ sort_by }}&page={{ page|add:'1' }}">
-          {% if selected_lang == "pl" %}Następna{% else %}Next{% endif %}
-        </a>
+
+      {# ── result summary ── #}
+      <div class="results-summary">
+        <div class="summary-stats">
+          <strong>{{ total }}</strong>
+          {% if selected_lang == "pl" %}
+            {% if total == 0 %}wyników{% elif total == 1 %}wynik{% elif total < 5 %}wyniki{% else %}wyników{% endif %}
+            dla zapytania „<em>{{ query }}</em>"
+            {% if search_mode == 'semantic' %}(wyszukiwanie semantyczne){% elif search_mode == 'hybrid' %}(wyszukiwanie hybrydowe){% endif %}
+          {% else %}
+            {% if total == 1 %}result{% else %}results{% endif %} for query "<em>{{ query }}</em>"
+            {% if search_mode == 'semantic' %}(semantic search){% elif search_mode == 'hybrid' %}(hybrid search){% endif %}
+          {% endif %}
+        </div>
+      </div>
+
+      {# ── results list ── #}
+      <div class="results-list">
+        {% for doc in results %}
+          <div class="result-card">
+            <div class="result-header">
+              <div class="result-icon">
+                {{ doc.icon|safe }}
+              </div>
+              <div class="result-title">
+                <a href="{{ doc.href }}" target="_blank">{{ doc.title }}</a>
+              </div>
+            </div>
+            {% if doc.meta %}
+              <div class="result-meta">{{ doc.meta }}</div>
+            {% endif %}
+            {% if doc.snippet %}
+              <div class="result-snippet">{{ doc.snippet|safe }}</div>
+            {% else %}
+              <div class="result-no-snippet">
+                {% if selected_lang == "pl" %}(brak streszczenia){% else %}(no summary available){% endif %}
+              </div>
+            {% endif %}
+          </div>
+        {% empty %}
+          <div class="no-results">
+            <div class="no-results-icon">
+              <i class="bi bi-search"></i>
+            </div>
+            <h3>No Results Found</h3>
+            <p>
+              {% if selected_lang == "pl" %}
+                Brak wyników dla zapytania.
+              {% else %}
+                No results found for your query.
+              {% endif %}
+            </p>
+          </div>
+        {% endfor %}
+      </div>
+
+      {# ── pagination ── #}
+      {% if total_pages > 1 %}
+        <nav class="pagination">
+          {% if page > 1 %}
+            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}
+                      {% if selected_lang %}lang={{ selected_lang }}&{% endif %}
+                      {% if search_mode %}mode={{ search_mode }}&{% endif %}
+                      sort={{ sort_by }}&page={{ page|add:'-1' }}" class="page-link">
+              <i class="bi bi-chevron-left"></i>
+              {% if selected_lang == "pl" %}Poprzednia{% else %}Previous{% endif %}
+            </a>
+          {% endif %}
+          <span class="page-info">{{ page }} {% if selected_lang == "pl" %}z{% else %}of{% endif %} {{ total_pages }}</span>
+          {% if page < total_pages %}
+            <a href="?{% if query %}q={{ query|urlencode }}&{% endif %}
+                      {% if selected_lang %}lang={{ selected_lang }}&{% endif %}
+                      {% if search_mode %}mode={{ search_mode }}&{% endif %}
+                      sort={{ sort_by }}&page={{ page|add:'1' }}" class="page-link">
+              {% if selected_lang == "pl" %}Następna{% else %}Next{% endif %}
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          {% endif %}
+        </nav>
       {% endif %}
-    </nav>
+    </div>
+  {% else %}
+    <div class="welcome-section">
+      <div class="welcome-card">
+        <h2>Welcome to Document Search</h2>
+        <p>Search through your documents using different search modes and filters.</p>
+        <div class="search-modes">
+          <h3>Available Search Modes:</h3>
+          <div class="mode-cards">
+            <div class="mode-card">
+              <i class="bi bi-key"></i>
+              <h4>Keyword Search</h4>
+              <p>Traditional search with suggestions and typo correction</p>
+            </div>
+            <div class="mode-card">
+              <i class="bi bi-brain"></i>
+              <h4>Semantic Search</h4>
+              <p>AI-powered search based on meaning and context</p>
+            </div>
+            <div class="mode-card">
+              <i class="bi bi-diagram-3"></i>
+              <h4>Hybrid Search</h4>
+              <p>Combines semantic understanding with keyword matching</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   {% endif %}
+</div>
 
+<style>
+.search-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.search-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e1e8ed;
+  position: relative;
+}
+
+.header-content {
+  text-align: center;
+  flex: 1;
+}
+
+.main-nav {
+  position: absolute;
+  right: 0;
+}
+
+.main-nav .nav-link {
+  background: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: background 0.3s;
+}
+
+.main-nav .nav-link:hover {
+  background: #2980b9;
+  color: white;
+  text-decoration: none;
+}
+
+.header-content h1 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.header-content p {
+  color: #7f8c8d;
+  font-size: 16px;
+  margin: 0;
+}
+
+.search-form-container {
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.input-group {
+  display: flex;
+  border: 2px solid #e1e8ed;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  flex: 1;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  padding: 16px 20px;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #3498db;
+}
+
+.search-submit {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.search-submit:hover {
+  background: #2980b9;
+}
+
+.form-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.control-group label {
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.form-select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+}
+
+.search-results-container {
+  margin-top: 30px;
+}
+
+.suggestion-card {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.suggestion-icon {
+  color: #f39c12;
+  font-size: 1.2rem;
+}
+
+.suggestion-content a {
+  color: #e67e22;
+  text-decoration: none;
+}
+
+.suggestion-content a:hover {
+  text-decoration: underline;
+}
+
+.results-summary {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.summary-stats {
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.result-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.result-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.result-icon {
+  color: #3498db;
+  font-size: 1.2rem;
+}
+
+.result-title a {
+  color: #2c3e50;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.result-title a:hover {
+  color: #3498db;
+  text-decoration: underline;
+}
+
+.result-meta {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.result-snippet {
+  color: #5a6c7d;
+  line-height: 1.6;
+}
+
+.result-no-snippet {
+  color: #95a5a6;
+  font-style: italic;
+}
+
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.no-results-icon {
+  font-size: 4rem;
+  color: #bdc3c7;
+  margin-bottom: 20px;
+}
+
+.no-results h3 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.no-results p {
+  color: #7f8c8d;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 30px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.page-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background 0.3s;
+}
+
+.page-link:hover {
+  background: #2980b9;
+  color: white;
+  text-decoration: none;
+}
+
+.page-info {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.welcome-section {
+  margin-top: 40px;
+}
+
+.welcome-card {
+  background: white;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.welcome-card h2 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.welcome-card p {
+  color: #7f8c8d;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+
+.search-modes h3 {
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.mode-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.mode-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid #e9ecef;
+}
+
+.mode-card i {
+  font-size: 2rem;
+  color: #3498db;
+  margin-bottom: 15px;
+}
+
+.mode-card h4 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.mode-card p {
+  color: #7f8c8d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .search-container {
+    padding: 15px;
+  }
+  
+  .search-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    position: static;
+  }
+  
+  .main-nav {
+    position: static;
+  }
+  
+  .header-content {
+    text-align: center;
+  }
+  
+  .form-row {
+    flex-direction: column;
+  }
+  
+  .form-controls {
+    grid-template-columns: 1fr;
+  }
+  
+  .mode-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+</style>
 {% endblock %}

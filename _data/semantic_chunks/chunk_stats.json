@@ -2,8 +2,8 @@
   "total_chunks": 92,
   "documents_processed": 5,
   "languages": [
-    "en",
-    "pl"
+    "pl",
+    "en"
   ],
   "avg_chunk_size": 2835.4565217391305
 }
