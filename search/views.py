@@ -743,7 +743,7 @@ def _get_conversational_response(query: str, context_docs: List[Dict[str, Any]],
     try:
         # Initialize DeepSeek client
         client = OpenAI(
-            api_key="sk-56ba069176d44cfc8bc0060df5a2af9d",
+            api_key="sk-56ba06***6d44c****c0060df5a2af9d",
             base_url="https://api.deepseek.com"
         )
         
